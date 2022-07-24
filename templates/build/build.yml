@@ -1,0 +1,119 @@
+.build_anchor: &build
+  script: 
+    - go build -o bin/$APP_NAME-$OP_SYS-$GOARCH-$VERSION$FILETYPE
+    - cd ./bin
+    - md5sum $APP_NAME-$OP_SYS-$GOARCH-$VERSION$FILETYPE > $APP_NAME-$OP_SYS-$GOARCH$VERSION$FILETYPE.sum
+    - ls -a
+
+.cache_template: &cache_conf
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - ./bin
+
+build_app_calc_win_amd64_:
+  except:
+    - tags
+  stage: build
+  variables: 
+    OP_SYS: "win"
+    GOARCH: "amd64"
+    FILETYPE: ".exe"
+    VERSION: $CI_COMMIT_SHORT_SHA
+    GOOS: "windows"
+  <<: *build
+  tags:
+    - "Group3"
+  <<: *cache_conf
+
+build_app_calc_lnx_amd64_:
+  except:
+    - tags
+  stage: build
+  variables: 
+    OP_SYS: "lnx"
+    GOARCH: "amd64"
+    FILETYPE: ".bin"
+    VERSION: $CI_COMMIT_SHORT_SHA
+    GOOS: "linux"
+  <<: *build
+  tags:
+    - "Group3"
+  <<: *cache_conf
+
+build_app_calc_lnx_arm64_:
+  except:
+    - tags
+  stage: build
+  variables: 
+    OP_SYS: "lnx"
+    GOARCH: "arm64"
+    FILETYPE: ".bin"
+    VERSION: $CI_COMMIT_SHORT_SHA
+    GOOS: "linux"
+  <<: *build
+  tags:
+    - "Group3"
+  <<: *cache_conf
+
+build_app_calc_win_amd64_-tag:
+  only:
+    - tags
+  stage: build
+  variables: 
+    OP_SYS: "win"
+    GOARCH: "amd64"
+    FILETYPE: ".exe"
+    VERSION: $CI_COMMIT_TAG
+    GOOS: "windows"
+  <<: *build
+  tags:
+    - "Group3"
+  <<: *cache_conf
+
+build_app_calc_lnx_amd64_-tag:
+  only:
+    - tags
+  stage: build
+  variables: 
+    OP_SYS: "lnx"
+    GOARCH: "amd64"
+    FILETYPE: ".bin"
+    VERSION: $CI_COMMIT_TAG
+    GOOS: "linux"
+  <<: *build
+  tags:
+    - "Group3"
+  <<: *cache_conf
+
+build_app_calc_lnx_arm64_-tag:
+  only:
+    - tags
+  stage: build
+  variables: 
+    OP_SYS: "lnx"
+    GOARCH: "arm64"
+    FILETYPE: ".bin"
+    VERSION: $CI_COMMIT_TAG
+    GOOS: "linux"
+  <<: *build
+  tags:
+    - "Group3"
+  <<: *cache_conf
+
+deploy-app:
+  stage: deploy
+  script:
+    - echo "Deploying application..."
+    - ls -a
+  <<: *cache_conf
+  artifacts:
+    paths:
+      - ./bin
+    expire_in: 1 day
+  tags:
+    - "Group3"
+
+
+
+

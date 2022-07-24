@@ -1,0 +1,39 @@
+.cache_template: &cache_conf
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - ./bin
+      - ./math/
+
+deploy-app:
+  stage: deliver
+  except:
+    - tags
+  script:
+    - echo "Deploying application..."
+    - ls -a
+  <<: *cache_conf
+  artifacts:
+    paths:
+      - ./bin
+      - ./math/
+    expire_in: 3 days
+  tags:
+    - "Group3"
+
+deploy-app-tag:
+  stage: deliver
+  only:
+    - tags
+  script:
+    - echo "Deploying application..."
+    - ls -a
+  <<: *cache_conf
+  artifacts:
+    paths:
+      - ./bin
+      - ./math/
+    expire_in: 1 week
+  tags:
+    - "Group3"
+

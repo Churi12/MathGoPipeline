@@ -1,0 +1,34 @@
+.test_anchor: &test
+  script: 
+    - cd ./math
+    - go test $TEST_SCRIPT | tee $TEST_NAME
+.cache_template: &cache_conf
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - ./math/
+
+run-tests:
+  stage: test
+  except:
+    - tags
+  variables:
+    TEST_SCRIPT: "-v"
+    TEST_NAME: "tests_results.txt"
+  <<: *test
+  tags:
+    - "Group3"
+  <<: *cache_conf
+
+coverage-tests:
+  stage: test
+  except:
+    - tags
+  variables:
+    TEST_SCRIPT: "-coverprofile=coverage.out"
+    TEST_FILENAME: "tests_coverage.txt"
+  <<: *test
+  tags:
+    - "Group3"
+  <<: *cache_conf
+

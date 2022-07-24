@@ -1,0 +1,16 @@
+stages:
+  - test
+  - build
+  - deliver
+
+variables:
+  APP_NAME: Calc
+
+default:
+  image: golang:1.16-alpine
+
+include:
+  - '/templates/tests/test.yml'
+  - '/templates/build/build.yml'
+  - '/templates/deploy/deploy.yml'
+
